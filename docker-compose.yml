@@ -1,18 +1,31 @@
 version: '3.8'
 
 services:
-  mysql:
-    image: mysql:8
-    container_name: mysql-container
+#  mysql:
+#    image: mysql:8
+#    container_name: mysql-container
+#    environment:
+#      MYSQL_ROOT_PASSWORD: root
+#      MYSQL_DATABASE: DockerTbl
+#      MYSQL_PASSWORD: root
+#    ports:
+#      - "3306:3306"
+#    volumes:
+#      - mysql_data:/var/lib/mysql
+#    networks:
+#      - springboot-network
+
+  postgres:
+    image: postgres:17
+    container_name: postgres-container
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: DockerTbl
-      #MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 78oSY8Odyzkb8TAZddU03vN6lAEu5VuR
+      POSTGRES_DB: dockertbl
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - springboot-network
 
@@ -20,18 +33,27 @@ services:
     build: .
     container_name: springboot-container
     ports:
-      - "8080:8080"
+      - "8081:8080"
     depends_on:
-      - mysql
+      #- mysql
+      - postgres
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/DockerTbl?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      # For MySQL
+      #SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/DockerTbl?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      #SPRING_DATASOURCE_USERNAME: root
+      #SPRING_DATASOURCE_PASSWORD: root
+
+      # Uncomment this instead if using PostgreSQL
+       SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d2s1ise3jp1c738oma8g-a.singapore-postgres.render.com:5432/dockertbl
+       SPRING_DATASOURCE_USERNAME: root
+       SPRING_DATASOURCE_PASSWORD: 78oSY8Odyzkb8TAZddU03vN6lAEu5VuR
+
     networks:
       - springboot-network
 
 volumes:
-  mysql_data:
+  #mysql_data:
+  postgres_data:
 
 networks:
   springboot-network:
